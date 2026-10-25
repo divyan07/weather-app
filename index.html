@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Weather App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #74ebd5, #ACB6E5);
+            text-align: center;
+            padding: 50px 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .weather-card {
+            background: white;
+            max-width: 350px;
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #234;
+        }
+
+        .weather-icon {
+            font-size: 60px;
+        }
+
+        .temperature {
+            font-size: 40px;
+            font-weight: bold;
+            color: #234;
+        }
+
+        p {
+            color: #555;
+        }
+    </style>
+</head> 
+
+<body>
+    <h1>🌦️ My Weather App</h1>
+
+    <div class="weather-card">
+        <div class="weather-icon" id="icon">🌤️</div>
+        <h2 id="condition">Loading weather...</h2>
+        <p class="temperature" id="temperature">--°C</p>
+        <p id="details">Getting the latest weather...</p>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        async function getWeather() {
+        const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=29.9457&longitude=78.1642&current=temperature_2m,weather_code,wind_speed_10m");
+        const data = await response.json();
+        console.log(data);
+        document.getElementById("temperature").textContent = data.current.temperature_2m + "°C";
+        document.getElementById("details").textContent = "Wind: " + data.current.wind_speed_10m + " km/h";
+        const code = data.current.weather_code;
+        let condition = "Unknown";
+        let icon = "🌤️";
+
+        if (code === 0) {
+        condition = "Clear Sky";
+        icon = "☀️";
+        } else if (code >= 1 && code <= 3) {
+        condition = "Cloudy";
+        icon = "⛅";
+        } else if (code >= 61 && code <= 65) {
+        condition = "Rainy";
+        icon = "🌧️";
+        }
+
+        document.getElementById("condition").textContent = condition;
+        document.getElementById("icon").textContent = icon;
+        }
+
+        getWeather();
+    </script>
+</body>
+</html>
